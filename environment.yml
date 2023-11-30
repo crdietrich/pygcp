@@ -1,0 +1,27 @@
+name: pygcp-dev
+channels:
+  - defaults
+  - conda-forge
+
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - ipykernel
+  - matplotlib
+  - tqdm
+  - markdown
+  - pip
+  - pip:
+    - google-auth
+    - google-cloud-dlp
+    - google-cloud-storage
+    - google-cloud-aiplatform
+    - google-cloud-language
+    - google-cloud-secret-manager
+    - google-cloud-logging
+    - google-cloud-bigquery
+    - google-api-python-client
+    - pandas-gbq
+    - gspread-pandas
+    - gspread-formatting
