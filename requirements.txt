@@ -1,0 +1,20 @@
+# source packages from pypi
+--index-url https://pypi.org/project/
+
+# this package and it's dependencies 
+--no-build-isolation --no-deps -e .
+
+# document building tools  
+ipython
+ipythonkernel
+jupytext
+markdown
+matplotlib
+myst-parser
+nbsphinx
+numpy
+numpydoc
+pydata-sphinx-theme
+sphinx
+sphinx-book-theme
+sphinx-copybutton
