@@ -1,8 +1,8 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# For the full list of built-in configuration values, see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
+"""Configuration file for the Sphinx documentation builder.
 
+For the full list of built-in configuration values, see the documentation:
+https://www.sphinx-doc.org/en/master/usage/configuration.html
+"""
 
 import os
 import sys
@@ -21,14 +21,14 @@ html_title = 'PyGCP'  # top right text for link to site root
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-	'nbsphinx',
-	'sphinx.ext.duration',
-	'sphinx.ext.doctest',
-	'sphinx.ext.autodoc',
-	'sphinx.ext.autosummary',
-	'numpydoc',
-	'myst_parser',
-	'sphinx.ext.mathjax'
+    'nbsphinx',
+    'sphinx.ext.duration',
+    'sphinx.ext.doctest',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'numpydoc',
+    'myst_parser',
+    'sphinx.ext.mathjax'
 ]
 
 templates_path = ['_templates']
@@ -39,7 +39,7 @@ source_suffix = {
     '.md': 'markdown',
 }
 
-# -- Autodoc configurations --------------------  
+# -- Autodoc configurations --------------------
 autodoc_type_aliases = {}
 autodoc_docstring_signature = True
 
@@ -57,13 +57,15 @@ html_static_path = ['_static']
 # -- Overall Config --
 nitpicky = True
 
-# -- Docstring Removal --  
+
+# -- Docstring Removal --
 def remove_module_docstring(app, what, name, obj, options, lines):
-    """Remove module docstrings"""
+    """Remove module docstrings."""
     include_modules = []  # modules to INCLUDE their module docstrings
     if what == "module" and name not in include_modules:
         del lines[:]
 
+
 def setup(app):
-    """All acctions to take on setup"""
+    """All actions to take on setup."""
     app.connect("autodoc-process-docstring", remove_module_docstring)

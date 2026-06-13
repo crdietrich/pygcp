@@ -1,6 +1,6 @@
-"""Python Methods for Google Cloud Platform
+"""Python Methods for Google Cloud Platform.
 
-Copyright (c) 2023 Colin Dietrich
+Copyright (c) 2025 Colin Dietrich
 MIT License, see LICENSE file for complete text.
 """
 
@@ -86,7 +86,7 @@ setuptools.setup(
     packages=packages,
     install_requires=dependencies,
     extras_require=extras,
-    python_requires=">=3.7, <=3.12",
+    python_requires=">=3.9",
     include_package_data=True,
     zip_safe=False,
 )

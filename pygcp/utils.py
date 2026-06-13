@@ -1,9 +1,8 @@
-"""Utility Functions for Google Cloud Platform
+"""Utility Functions for Google Cloud Platform.
 
 Copyright (c) 2023 Colin Dietrich
 MIT License, see LICENSE file for complete text.
 """
-
 
 import pandas as pd
 
@@ -20,7 +19,6 @@ def is_notebook() -> bool:
         True if in Jupyter Notebook
         False in all other cases
     """
-
     try:
         shell = get_ipython().__class__.__name__
         if shell == "ZMQInteractiveShell":
@@ -34,7 +32,7 @@ def is_notebook() -> bool:
 
 
 def null_count(_df):
-    """Count and calculate the percentage of null values in all columns
+    """Count and calculate the percentage of null values in all columns.
 
     Parameters
     ----------
@@ -55,7 +53,7 @@ def null_count(_df):
 
 
 def null_plot(_df, metric="percent", figsize=(10, 10)):
-    """Plot the null count in a Pandas DataFrame
+    """Plot the null count in a Pandas DataFrame.
 
     Parameters
     ----------
@@ -70,7 +68,7 @@ def null_plot(_df, metric="percent", figsize=(10, 10)):
 
 
 def has_keys(d, keys):
-    """Check if a dictionary key is in a dictionary
+    """Check if a dictionary key is in a dictionary.
 
     Parameters
     ----------
@@ -89,7 +87,7 @@ def has_keys(d, keys):
 
 
 def has_values(d, values):
-    """Check if a dictionary value is in a dictionary
+    """Check if a dictionary value is in a dictionary.
 
     Parameters
     ----------
@@ -108,13 +106,13 @@ def has_values(d, values):
 
 
 def has_keys_and_values(d, kv):
-    """Check if a dictionary key is in a dictionary
+    """Check if a dictionary key is in a dictionary.
 
     Parameters
     ----------
     d : dictionary
     kv : dict, key:value pairs to to check for
-    
+
     Returns
     -------
     bool, True if all key:value pairs are in the dictionary

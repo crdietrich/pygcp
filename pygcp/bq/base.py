@@ -22,8 +22,8 @@ def is_google_exception(e):
     ----------
     e : Exception
 
-    Return
-    ------
+    Returns
+    -------
     bool
         True if the Exception is a Google API Exception
     """
@@ -58,11 +58,11 @@ def basic_query(gcp_credentials, query_text):
 
     qjc = job.query_config()
     download_kwargs = {
-        'gcp_credentials': gcp_credentials,
-        'query_text': query_text,
-        'query_job_config': qjc,
-        'verbose': True
-        }
+        "gcp_credentials": gcp_credentials,
+        "query_text": query_text,
+        "query_job_config": qjc,
+        "verbose": True,
+    }
     metadata, df = to_df(**download_kwargs)
     return df
 
@@ -107,7 +107,7 @@ def job_timer(query_job, timeout, total_bytes=None, verbose=False):
             pbar.update(total_bytes)
         except KeyError:
             if verbose:
-                print('totalBytesProcessed key missing')
+                print("totalBytesProcessed key missing")
                 print(query_job.__dict__)
 
 
@@ -249,8 +249,9 @@ def upload_files(
     -------
     google.cloud.bigquery.job.LoadJob
 
-    Also See
-    --------https://googleapis.dev/python/bigquery/latest/generated/google.cloud.bigquery.client.Client.html#google.cloud.bigquery.client.Client.load_table_from_file
+    See Also
+    --------
+    https://googleapis.dev/python/bigquery/latest/generated/google.cloud.bigquery.client.Client.html#google.cloud.bigquery.client.Client.load_table_from_file
     """
 
     bq_client = bigquery.Client(credentials=gcp_credentials, project=project_id)
@@ -271,9 +272,7 @@ def upload_files(
                     print("To:", destination)
 
                 load_job = bq_client.load_table_from_file(
-                    file_obj=f_open,
-                    destination=destination,
-                    job_config=job_config
+                    file_obj=f_open, destination=destination, job_config=job_config
                 )
                 if verbose:
                     print("Job Started: {}".format(load_job.job_id))
@@ -284,9 +283,7 @@ def upload_files(
     elif upload_type == "gcs":
         source_uris = source
         load_job = bq_client.load_table_from_uri(
-            source_uris=source_uris,
-            destination=destination,
-            job_config=job_config
+            source_uris=source_uris, destination=destination, job_config=job_config
         )
         if verbose:
             print("Starting job {}".format(load_job.job_id))
@@ -372,7 +369,7 @@ def execute(
     timeout=None,
     verbose=False,
 ):
-    """Execute an operation on BigQuery that will not return data such as 
+    """Execute an operation on BigQuery that will not return data such as
     dataset, table or BQML model creation.
 
     Parameters

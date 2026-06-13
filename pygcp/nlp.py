@@ -1,9 +1,8 @@
-"""Natural Language Processing for Google Cloud Platform
+"""Natural Language Processing for Google Cloud Platform.
 
 Copyright (c) 2023 Colin Dietrich
 MIT License, see LICENSE file for complete text.
 """
-
 
 import time
 
@@ -13,27 +12,48 @@ from google.cloud import language_v1 as gcp_language
 
 
 class NLP:
+    """GCP Natural Language Service.
+
+    Attributes
+    ----------
+    client : google.cloud.language_v1.LanguageServiceClient
+        API client class.
+    language : str, default = 'en'
+        Language of the text.
+    encoding : google.cloud.language_v1.EncodingType, default = UTF8
+        The encoding of the text. Other options are UTF16, UTF32 or None
+    api_quota : int, default = 600
+        TODO
+    api_request_count : int, default =0
+        TODO
+    """
+
     def __init__(self, gcp_credentials=None):
-        """Initialize the GCP Natural Language Service.
-        Assumes the environmental variable 
-        GOOGLE_APPLICATION_CREDENTIALS is set in execution
-        environment.
+        """Initialize the service.
+
+        Assumes the environmental variable GOOGLE_APPLICATION_CREDENTIALS
+        is set in execution environment.
+
+        Parameters
+        ----------
+        gcp_credentials : google.auth.compute_engine.credentials.Credentials
+            or google.oauth2.service_account.Credentials
+            GCP credentials instance.
         """
         self.client = gcp_language.LanguageServiceClient(credentials=gcp_credentials)
         self.language = "en"  # auto if not specified
         self.encoding = gcp_language.EncodingType.UTF8  # or None, UTF16, UTF32
-
         self.api_quota = 600
         self.api_request_count = 0
 
     @staticmethod
     def _request(text):
-        """Create an NLP request dictionary
-        
+        """Create an NLP request dictionary.
+
         Parameters
         ----------
         text : str, text to transmit to API
-        
+
         Returns
         -------
         dict : request parameters and text
@@ -44,15 +64,11 @@ class NLP:
             text = text.decode("utf-8")
         type_ = gcp_language.Document.Type.PLAIN_TEXT
         document = {"type_": type_, "content": text}
-        request={"document": document}
+        request = {"document": document}
         return request
-    
-    def sentiment(self, text):
-        """Analyze text for sentiment
 
-        Notes
-        -----
-        From the example: https://cloud.google.com/natural-language/docs/analyzing-sentiment
+    def sentiment(self, text):
+        """Analyze text for sentiment.
 
         Parameters
         ----------
@@ -61,16 +77,21 @@ class NLP:
         Returns
         -------
         sentiment_score : float
+            TODO
         sentiment_magnitude : float
+            TODO
+        Notes
+        -----
+        From the example: https://cloud.google.com/natural-language/docs/analyzing-sentiment
         """
         request = self._request(text)
-        request['encoding_type'] = self.encoding
+        request["encoding_type"] = self.encoding
         response = self.client.analyze_sentiment(request)
         return response.document_sentiment.score, response.document_sentiment.magnitude
-    
+
     def sentiment_df(self, _df, column_name, prefix=""):
-        """Compute the sentiment of a pandas DataFrame column
-        
+        """Compute the sentiment of a pandas DataFrame column.
+
         Parameters
         ----------
         _df : Pandas DataFrame
@@ -93,76 +114,68 @@ class NLP:
                 self.api_request_count += 1
                 time.sleep(58.0 / self.api_quota)  # 1 min quota rate with 2s safety
                 return self.sentiment(text)
-        _dfx = _df.apply(lambda r: _sentiment(r[column_name]), 
-                         result_type='expand', axis=1)
-        _dfx.columns = [prefix+'sentiment_score', prefix+'sentiment_magnitude']
+
+        _dfx = _df.apply(
+            lambda r: _sentiment(r[column_name]), result_type="expand", axis=1
+        )
+        _dfx.columns = [prefix + "sentiment_score", prefix + "sentiment_magnitude"]
         _df = pd.concat([_df, _dfx], axis=1)
         return _df
-    
+
     def entities(self, text):
-        """Find and describe entities in text
-        
+        """Find and describe entities in text.
+
         Parameters
         ----------
         text : str, text to analyze
 
         Returns
         -------
-        
+        TODO: docstring for entities
         """
         request = self._request(text)
-        request['encoding_type'] = self.encoding
+        request["encoding_type"] = self.encoding
         response = self.client.analyze_entities(request)
         return response.entities
 
     def entity_sentiment(self, text):
-        """
-        self.client.analyze_entity_sentiment
-        """
+        """TODO: docstring self.client.analyze_entity_sentiment."""
         request = self._request(text)
-        request['encoding_type'] = self.encoding
+        request["encoding_type"] = self.encoding
         response = self.client.analyze_entity_sentiment(request)
         return response
-    
+
     def syntax(self, text):
-        """
-        self.client.analyze_syntax
-        """
+        """TODO: docstring self.client.analyze_syntax."""
         request = self._request(text)
-        request['encoding_type'] = self.encoding
+        request["encoding_type"] = self.encoding
         response = self.client.analyze_syntax(request)
         return response
-    
+
     def classify(self, text):
-        """
-        self.client.classify_text
-        """
+        """TODO: docstring self.client.classify_text."""
         request = self._request(text)
         response = self.client.classify_text(request)
         return response
-    
+
     def moderate(self, text):
-        """
-        self.client.moderate_text
-        """
+        """TODO: docstring self.client.moderate_text."""
         request = self._request(text)
         response = self.client.moderate_text(request)
         return response
-    
+
     def annotate(self, text):
-        """
-        self.client.annotate_text
-        """
+        """TODO: docstring self.client.annotate_text."""
         request = self._request(text)
         features = gcp_language.AnnotateTextRequest.Features(
             extract_syntax=True,
             extract_entities=True,
             extract_document_sentiment=True,
             classify_text=True,
-            moderate_text=True
-            )
-        request = gcp_language.AnnotateTextRequest(document=request['document'],
-                                                   features=features)
+            moderate_text=True,
+        )
+        request = gcp_language.AnnotateTextRequest(
+            document=request["document"], features=features
+        )
         response = self.client.annotate_text(request)
         return response
-    

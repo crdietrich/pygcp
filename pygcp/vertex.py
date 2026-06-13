@@ -1,6 +1,6 @@
-"""Vertex AI on Google Cloud Platform
+"""Vertex AI on Google Cloud Platform.
 
-Copyright (c) 2023 Colin Dietrich
+Copyright (c) 2025 Colin Dietrich
 MIT License, see LICENSE file for complete text.
 """
 
@@ -14,32 +14,37 @@ from vertexai.language_models import TextEmbeddingModel, ChatModel, InputOutputT
 
 
 class Embedding:
+    """TODO Class docstring."""
+
     def __init__(self, model_version="textembedding-gecko@001"):
+        """TODO method docstring."""
         self.model_version = model_version
         self.api_request_limit = 5
         self.model = TextEmbeddingModel.from_pretrained(self.model_version)
-        self.size = len(self.string("dummy data"))
+        self.size = len(self.embed_string("dummy data"))
         self.api_retry_limit = 5  # counts
         self.api_retry_delay = 5  # seconds
         self.api_backoff_factor = 2  # base of exponential backoff multiplier
         self.verbose = False
 
-    def string(self, input_string) -> list:
-        """Text embedding with the textembedding-gecko@001 LLM
+    def embed_string(self, input_string) -> list:
+        """Run one embedding.
 
         Parameters
         ----------
-        input_string : str, text to be embedded
+        input_string : str
+            Text to generate embeddings from.
 
         Returns
         -------
-        list of float, representing the embeddings
+        list of float
+            Embedding representation of the string.
         """
         embed = self.get_embeddings_with_backoff(input_string, input_kind="str")
         return embed[0].values
 
     def _sequence_old(self, input_seq) -> list:
-        """Create text embeddings for an iterable sequence of strings
+        """Create text embeddings for an iterable sequence of strings.
 
         Parameters
         ----------
@@ -56,7 +61,7 @@ class Embedding:
         return embed
 
     def get_embeddings_with_backoff(self, input_data, input_kind="list", verbose=False):
-        """ """
+        """TODO method docstring."""
         if input_kind == "str":
             input_data = [input_data]
 
@@ -71,7 +76,7 @@ class Embedding:
         return
 
     def _sequence(self, input_seq) -> list:
-        """Create text embeddings for an iterable sequence of strings
+        """Create text embeddings for an iterable sequence of strings.
 
         Parameters
         ----------
@@ -88,12 +93,13 @@ class Embedding:
             try:
                 embed = self.model.get_embeddings(input_seq)
             except:
+                # TODO: assign precise Exception
                 pass
         embed = [_e.values for _e in embed]
         return embed
 
     def sequence(self, input_seq) -> list:
-        """Create text embeddings for an iterable sequence of strings
+        """Create text embeddings for an iterable sequence of strings.
 
         Parameters
         ----------
@@ -124,15 +130,23 @@ class Embedding:
         return a
 
 
+def timestamp():
+    """Create a string timestamp in the UTC timezone."""
+    return str(pd.Timestamp("now", tz="UTC"))
+
+
 class TextChat:
-    """LLM text chat session"""
-    def __init__(self, 
-                 model_name='chat-bison', 
-                 temperature=0.2, 
-                 max_output_tokens=256, 
-                 top_p=0.95, 
-                 top_k=40):
-        
+    """LLM text chat session."""
+
+    def __init__(
+        self,
+        model_name="chat-bison",
+        temperature=0.2,
+        max_output_tokens=256,
+        top_p=0.95,
+        top_k=40,
+    ):
+        """TODO: init docstring."""
         self.model_name = model_name
         self.temperature = temperature
         self.max_output_tokens = max_output_tokens
@@ -145,47 +159,52 @@ class TextChat:
 
     @property
     def model_parameters(self):
-        """Parameter kwarg wrapper"""
-        return {'temperature': self.temperature,
-                'max_output_tokens': self.max_output_tokens,
-                'top_p': self.top_p,
-                'top_k': self.top_k}
-        
-    def timestamp(self):
-        """Create a string timestamp in the UTC timezone"""
-        return str(pd.Timestamp('now', tz='UTC'))
-        
+        """Parameter kwarg wrapper."""
+        return {
+            "temperature": self.temperature,
+            "max_output_tokens": self.max_output_tokens,
+            "top_p": self.top_p,
+            "top_k": self.top_k,
+        }
+
     def reset(self):
-        """Reset the chat model session and generate a new session uuid"""
+        """Reset the chat model session and generate a new session uuid."""
         self.chat_model = ChatModel.from_pretrained(self.model_name)
         self.uuid = str(uuid.uuid1())
 
     def start(self, context, examples=None):
-        """Start a chat session
+        """Start a chat session.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         context : str
             All context to provide the model in the initial prompt
-        example : list of lists of str, optional
+        examples : list of lists of str, optional
             Example input and output text. Formatted as:
-            [['first input', 'first output'], ['second input', 'second output']]
+            [['first input', 'first output'],
+            ['second input', 'second output']]
         """
         self.reset()
-        self.session_log.append({'timestamp': self.timestamp(), 'uuid': self.uuid, 'reset': True})
-        self.session_log.append({'timestamp': self.timestamp(), 'uuid': self.uuid, 'context': context})
+        self.session_log.append(
+            {"timestamp": timestamp(), "uuid": self.uuid, "reset": True}
+        )
+        self.session_log.append(
+            {"timestamp": timestamp(), "uuid": self.uuid, "context": context}
+        )
         if examples:
-            self.session_log.append({'timestamp': self.timestamp(), 'uuid': self.uuid, 'examples': examples})
-        def itp(i, o):
-            return InputOutputTextPair(input_text=i, output_text=o)
+            self.session_log.append(
+                {"timestamp": timestamp(), "uuid": self.uuid, "examples": examples}
+            )
+
+        def itp(it, ot):
+            return InputOutputTextPair(input_text=it, output_text=ot)
+
         if examples is not None:
-            examples = [itp(i, o) for i,o in examples]
-        self.session = self.chat_model.start_chat(
-            context=context, 
-            examples=examples)
+            examples = [itp(i, o) for i, o in examples]
+        self.session = self.chat_model.start_chat(context=context, examples=examples)
 
     def request(self, question):
-        """Request an answer to a text question
+        """Request an answer to a text question.
 
         Parameters
         ----------
@@ -197,17 +216,23 @@ class TextChat:
         str
             Response from the LLM
         """
-        self.session_log.append({'timestamp': self.timestamp(), 'uuid': self.uuid, 'request': question})
+        self.session_log.append(
+            {"timestamp": timestamp(), "uuid": self.uuid, "request": question}
+        )
         response = self.session.send_message(question, **self.model_parameters)
         response_text = response.text.strip()
         if len(response.errors) == 0:
             response_errors = None
         else:
             response_errors = response.errors
-        self.session_log.append({'timestamp': self.timestamp(),
-                                 'uuid': self.uuid,
-                                 'response_text': response_text,
-                                 'response_safety_attributes': response.safety_attributes,
-                                 'response_is_blocked': response.is_blocked,
-                                 'response_errors': response_errors})
+        self.session_log.append(
+            {
+                "timestamp": timestamp(),
+                "uuid": self.uuid,
+                "response_text": response_text,
+                "response_safety_attributes": response.safety_attributes,
+                "response_is_blocked": response.is_blocked,
+                "response_errors": response_errors,
+            }
+        )
         return response_text

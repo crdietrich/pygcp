@@ -1,9 +1,8 @@
-"""BigQuery on Google Cloud Platform
+"""BigQuery Methods for Google Cloud Platform.
 
-Copyright (c) 2023 Colin Dietrich
+Copyright (c) 2025 Colin Dietrich
 MIT License, see LICENSE file for complete text.
 """
-
 
 from .base import (
     basic_query,

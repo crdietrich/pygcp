@@ -1,6 +1,6 @@
-"""Google Maps Methods
+"""Google Maps Methods.
 
-Copyright (c) 2023 Colin Dietrich
+Copyright (c) 2025 Colin Dietrich
 MIT License, see LICENSE file for complete text.
 
 API Reference:
@@ -25,28 +25,31 @@ def reverse_geocode(gmaps_client, lat, lon):
     -------
     str, formatted address
     """
-
     reverse_geocode_result = gmaps_client.reverse_geocode((lat, lon))
     address = reverse_geocode_result[0]["formatted_address"]
     return address
 
 
 def geocode(gmaps_client, address, iso_country):
-    """Convert an address (like "1600 Amphitheatre Parkway, Mountain View, CA") into geographic coordinates (like latitude 37.423021 and longitude -122.083739), which you can use to place markers or position the map.
+    """Convert an address into geographic coordinates.
 
     Parameters
     ----------
     gmaps_client : authenticated googlemaps.client.Client instance
-    address : str, formatted address
-    iso_country : str, ISO 3166-1 country codes. For full list see:
+    address : str
+        formatted address
+    iso_country : str
+        ISO 3166-1 country codes. For full list see:
         https://en.wikipedia.org/wiki/ISO_3166-1
 
     Returns
     -------
-    lat : float, latitude in XXX projection
-    lon : float, longitude in XXX projection
+    lat : float
+        latitude in XXX projection
+        TODO: determine projection output
+    lon : float
+        longitude in XXX projection
     """
-
     comp = {"country": iso_country}
     response = gmaps_client.geocode(address=address, components=comp)
     y = response[0]

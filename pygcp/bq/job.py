@@ -4,16 +4,15 @@ Copyright (c) 2023 Colin Dietrich
 MIT License, see LICENSE file for complete text.
 """
 
-
 from google.cloud import bigquery
 
 
 def load_metadata(load_job):
     """Generate metadata for a completed BigQuery Load Job
-    
+
     Parameters
     ----------
-    load_job : 
+    load_job :
     """
     metadata = {
         "job_id": load_job.job_id,
@@ -87,7 +86,7 @@ def load_config(**kwargs):
 
     source_format : str, {'CSV', 'DATASTORE_BACKUP', 'NEWLINE_DELIMITED_JSON', 'AVRO', 'PARQUET'} default='CSV'
         The format of the data files.
-        
+
     time_partitioning : google.cloud.bigquery.table.TimePartitioning, optional
         Time partitioning class instance
         Note: Only specify at most one of `time_partitioning` or `range_partitioning`.
@@ -95,11 +94,11 @@ def load_config(**kwargs):
     write_disposition : str, default='WRITE_APPEND'
         Specifies the action that occurs if the destination table already exists.
         The following values are supported:
-            'WRITE_TRUNCATE': If the table already exists, BigQuery overwrites 
+            'WRITE_TRUNCATE': If the table already exists, BigQuery overwrites
                 the table data and uses the schema from the load.
-            'WRITE_APPEND': If the table already exists, BigQuery appends 
+            'WRITE_APPEND': If the table already exists, BigQuery appends
                 the data to the table.
-            'WRITE_EMPTY': If the table already exists and contains data, 
+            'WRITE_EMPTY': If the table already exists and contains data,
                 a 'duplicate' error is returned in the job result.
         Each action only occurs if BigQuery is able to complete the job successfully.
         Creation, truncation and append actions occur as one update upon job completion.

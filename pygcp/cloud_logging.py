@@ -4,7 +4,6 @@ Copyright (c) 2023 Colin Dietrich
 MIT License, see LICENSE file for complete text.
 """
 
-
 import json
 from collections.abc import Iterable
 
@@ -65,7 +64,7 @@ def query(
     labels=None,
     order_by="ascending",
     query_language=None,
-    output='pandas'
+    output="pandas",
 ):
     """Retrieve Cloud Logging data from a specific GCP Project
 
@@ -118,8 +117,9 @@ def query(
         "descending": google.cloud.logging.DESCENDING,
     }
     order_by = order_by.lower()
-    assert order_by in order_mapper.keys(), (
-        "order not specified correctly, either 'ascending' or 'descending'")
+    assert (
+        order_by in order_mapper.keys()
+    ), "order not specified correctly, either 'ascending' or 'descending'"
     order_by = order_mapper[order_by]
 
     filter_str = ""

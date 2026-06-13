@@ -1,12 +1,11 @@
-"""Google Sheets
+"""Google Sheets.
 
-Copyright (c) 2023 Colin Dietrich
+Copyright (c) 2025 Colin Dietrich
 MIT License, see LICENSE file for complete text.
 
 For gspread library usage see:
 https://gspread-pandas.readthedocs.io/
 """
-
 
 from gspread_pandas import Spread
 
@@ -34,7 +33,6 @@ def read(gcp_credentials, worksheet_id, sheet_id, **kwargs):
     -------
     Pandas DataFrame
     """
-
     spread = Spread(sheet_id, creds=gcp_credentials)
     spread.open_sheet(worksheet_id)
 
@@ -58,15 +56,6 @@ def read(gcp_credentials, worksheet_id, sheet_id, **kwargs):
 def write(gcp_credentials, worksheet_id, sheet_id, df, replace=True, **kwargs):
     """Read a worksheet from a Google Sheet.
 
-    Notes
-    -----
-    sheet_id can be copied from the URL or retrieved with:
-        gspread_pandas.client.Client.list_spreadsheet_files_in_folder
-
-    Common gspread **kwargs related to header configurations:
-        headers (bool) – whether to include the headers in the worksheet (default True)
-        start (tuple,str) – tuple indicating (row, col) or string like ‘A1’ for top left cell (default (1,1))
-        
     Parameters
     ----------
     gcp_credentials : google.oauth2.service_account.Credentials instance
@@ -74,16 +63,28 @@ def write(gcp_credentials, worksheet_id, sheet_id, df, replace=True, **kwargs):
     sheet_id : str, unique ID of Sheet
     df : Pandas DataFrame to upload
     replace : bool, replace existing data in worksheet
-    **kwargs : keyword arguments to pass to gspread_pandas.spread.Spread.df_to_sheet
+    **kwargs : keyword arguments to pass to
+        gspread_pandas.spread.Spread.df_to_sheet
 
     Returns
     -------
     None
-    """
 
+    Notes
+    -----
+    sheet_id can be copied from the URL or retrieved with:
+        gspread_pandas.client.Client.list_spreadsheet_files_in_folder
+
+    Common gspread **kwargs related to header configurations:
+        headers (bool) – whether to include the headers in the
+            worksheet (default True)
+        start (tuple,str) – tuple indicating (row, col) or string
+            like ‘A1’ for top left cell (default (1,1))
+    """
     spread = Spread(sheet_id, creds=gcp_credentials)
     spread.df_to_sheet(df, replace=replace, sheet=worksheet_id, **kwargs)
 
 
 def format_header():
+    """TODO: Implement or delete."""
     pass

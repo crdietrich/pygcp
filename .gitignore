@@ -163,3 +163,5 @@ cython_debug/
 
 # In progress notebook development
 dev/
+
+pygcp/.idea/

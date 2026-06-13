@@ -1,18 +1,19 @@
-"""Secret Manager for Google Cloud Platform
+"""Secret Manager for Google Cloud Platform.
 
-Copyright (c) 2023 Colin Dietrich
+Copyright (c) 2025 Colin Dietrich
 MIT License, see LICENSE file for complete text.
 
-Note: 
-module name is 'secret.py' rather than 'secrets.py' to avoid 
+Notes
+-----
+Module name is 'secret.py' rather than 'secrets.py' to avoid
 namespace collision with numpy module requirement.
 
-References:
+References
+----------
 https://cloud.google.com/python/docs/reference/secretmanager/latest
 https://github.com/googleapis/python-secret-manager
 https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets
 """
-
 
 import google_crc32c
 import pandas as pd
@@ -22,6 +23,7 @@ response_columns = ["project", "name", "creation", "labels"]
 
 
 def response_parser(response):
+    """Parse Secret response."""
     name = response.name
     name = name.split("/")[-1]
     create_time = response.create_time.isoformat()
@@ -30,7 +32,7 @@ def response_parser(response):
 
 
 def list_all(gcp_credentials, project_id):
-    """List all secrets in a Project
+    """List all secrets in a Project.
 
     Parameters
     ----------
@@ -45,7 +47,6 @@ def list_all(gcp_credentials, project_id):
         creation : str, ISO timestamp when secret was created
         labels : dict, labels
     """
-
     client = secretmanager.SecretManagerServiceClient(credentials=gcp_credentials)
     request = secretmanager.ListSecretsRequest(parent=f"projects/{project_id}")
     page_result = client.list_secrets(request=request)
@@ -60,7 +61,7 @@ def list_all(gcp_credentials, project_id):
 
 
 def create(gcp_credentials, project_id, secret_id, labels=None):
-    """Add a Secret
+    """Add a Secret.
 
     Parameters
     ----------
@@ -87,7 +88,7 @@ def create(gcp_credentials, project_id, secret_id, labels=None):
 
 
 def add_version(gcp_credentials, project_id, secret_id, payload):
-    """
+    """Add a version to the secret.
 
     Parameters
     ----------
@@ -100,7 +101,6 @@ def add_version(gcp_credentials, project_id, secret_id, payload):
     -------
     str, secret version
     """
-
     client = secretmanager.SecretManagerServiceClient(credentials=gcp_credentials)
 
     parent = client.secret_path(project_id, secret_id)
@@ -111,8 +111,7 @@ def add_version(gcp_credentials, project_id, secret_id, payload):
     response = client.add_secret_version(
         request={
             "parent": parent,
-            "payload": {"data": payload, 
-                        "data_crc32c": int(crc32c.hexdigest(), 16)},
+            "payload": {"data": payload, "data_crc32c": int(crc32c.hexdigest(), 16)},
         }
     )
 
@@ -120,7 +119,7 @@ def add_version(gcp_credentials, project_id, secret_id, payload):
 
 
 def access(gcp_credentials, project_id, secret_id, version_id="latest"):
-    """Use Secret Manager to retrieve information
+    """Use Secret Manager to retrieve information.
 
     Parameters
     ----------
@@ -133,7 +132,6 @@ def access(gcp_credentials, project_id, secret_id, version_id="latest"):
     -------
     str, UTF-8 decoded payload stored in Secret Manager
     """
-
     version_id = str(version_id)
     client = secretmanager.SecretManagerServiceClient(credentials=gcp_credentials)
     name = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
@@ -143,7 +141,7 @@ def access(gcp_credentials, project_id, secret_id, version_id="latest"):
 
 
 def delete(gcp_credentials, project_id, secret_id):
-    """Delete a Secret
+    """Delete a Secret.
 
     Parameters
     ----------
@@ -151,7 +149,6 @@ def delete(gcp_credentials, project_id, secret_id):
     project_id : str, GCP project name
     secret_id : str, secret name
     """
-
     client = secretmanager.SecretManagerServiceClient(credentials=gcp_credentials)
     name = f"projects/{project_id}/secrets/{secret_id}"
     request = secretmanager.DeleteSecretRequest(name=name)
